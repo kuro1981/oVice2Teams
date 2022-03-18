@@ -1,0 +1,1 @@
+oViceのメンションをAzure Functionsを利用してTeamsにとりこむ。
