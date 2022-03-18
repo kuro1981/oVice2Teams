@@ -30,47 +30,34 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
     name = req.params.get("name")
     message = req.params.get("message")
 
-    if not name:
-        try:
-            req_body = req.get_json()
-        except ValueError:
-            pass
-        else:
-            name = req_body.get("name")
-    if name:
-        headers={
-            "Content-Type": "application/json",
-            }
-        req = requests.post(
-            TEAMS_WEBHOOK_URL,
-            headers = headers,
-            data = json.dumps(make_message(name, message))
-            )
-        
-        if req.status_code == 200:
+    headers={
+        "Content-Type": "application/json",
+        }
+    req = requests.post(
+        TEAMS_WEBHOOK_URL,
+        headers = headers,
+        data = json.dumps(make_message(name, message))
+        )
+    
+    if req.status_code == 200:
 
-            return func.HttpResponse(
-                "This HTTP triggered function executed successfully.",
-                status_code=200,
-            )
-
-        if req.status_code != 200:
-            logging.ERROR(req.params)
-
-            logging.ERROR(f"TEAMS_WEBHOOK_URL = {TEAMS_WEBHOOK_URL}")
-            logging.ERROR(f"TEAMS_EMAIL = {TEAMS_EMAIL}")
-            logging.ERROR(f"TEAMS_USER_NAME = {TEAMS_USER_NAME}")
-
-            return func.HttpResponse(
-                "This HTTP trigger had an error.",
-                status_code=500,
-            )
-
-    else:
         return func.HttpResponse(
-            "This HTTP triggered function executed successfully. Pass a name in the query string or in the request body for a personalized response.",
+            "This HTTP triggered function executed successfully.",
             status_code=200,
         )
+
+    if req.status_code != 200:
+        logging.ERROR(req.params)
+
+        logging.ERROR(f"TEAMS_WEBHOOK_URL = {TEAMS_WEBHOOK_URL}")
+        logging.ERROR(f"TEAMS_EMAIL = {TEAMS_EMAIL}")
+        logging.ERROR(f"TEAMS_USER_NAME = {TEAMS_USER_NAME}")
+
+        return func.HttpResponse(
+            "This HTTP POST data had an error, but request executed successfully.",
+            status_code=200,
+        )
+
 
 
 def make_message(name, message):
