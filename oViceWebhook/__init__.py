@@ -17,6 +17,7 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
     global TEAMS_USER_NAME
     logging.info("Python HTTP trigger function processed a request.")
 
+
     if settings.ALL_HOOK:
         TEAMS_WEBHOOK_URL = req.params.get("TEAMSHOOKURL")
         TEAMS_EMAIL = req.params.get("TEAMSEMAIL")
@@ -30,6 +31,13 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
     name = req.params.get("name")
     message = req.params.get("message")
 
+    logging.info(f"request detail is below")
+    logging.info(f"name : {name}")
+    logging.info(f"message : {message}")
+    logging.info(f"TEAMS_WEBHOOK_URL : {TEAMS_WEBHOOK_URL}")
+    logging.info(f"TEAMS_EMAIL : {TEAMS_EMAIL}")
+    logging.info(f"TEAMS_USER_NAME : {TEAMS_USER_NAME}")
+
     headers={
         "Content-Type": "application/json",
         }
@@ -40,6 +48,8 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
         )
     
     if req.status_code == 200:
+
+        logging.info(f"POST execution sucessed.")
 
         return func.HttpResponse(
             "This HTTP triggered function executed successfully.",
